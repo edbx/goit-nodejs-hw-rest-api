@@ -1,24 +1,8 @@
-const fs = require("fs").promises;
-const path = require("node:path");
-
-const { v4: uuidv4 } = require("uuid");
 const { catchAsync } = require("../utils");
-
-const contactsPath = path.join("models", "contacts.json");
-
-exports.contactList = async () => {
-  try {
-    const result = await fs.readFile(contactsPath);
-    const contacts = JSON.parse(result.toString());
-
-    return contacts;
-  } catch (error) {
-    throw new Error("contacts is not available");
-  }
-};
+const Contact = require("../models/contactsModel.js");
 
 exports.listContacts = catchAsync(async (req, res) => {
-  const contacts = await exports.contactList();
+  const contacts = await Contact.find().select("-__v").sort({ name: 1 });
 
   res.status(200).json({
     contacts,
@@ -28,62 +12,54 @@ exports.listContacts = catchAsync(async (req, res) => {
 exports.getContactById = catchAsync(async (req, res) => {
   const { contactId } = req.params;
 
-  const contacts = await exports.contactList();
-
-  const contactById = contacts.find(
-    (contact) => contact.id === contactId.toString()
-  );
+  const contact = await Contact.find({ _id: contactId }).select("-__v");
   res.status(200).json({
-    contactById,
+    contact,
   });
 });
 
-exports.removeContact = catchAsync(async (req, res) => {
-  const { contactId } = req.params;
-
-  const contacts = await exports.contactList();
-
-  const contactToDelete = contacts.find((contact) => contact.id === contactId);
-
-  const newArray = contacts.filter(
-    (contact) => contact.id !== contactToDelete.id
-  );
-
-  await fs.writeFile(contactsPath, JSON.stringify(newArray));
-  res.sendStatus(204);
-});
-
 exports.addContact = catchAsync(async (req, res) => {
-  const { name, email, phone } = req.body;
+  const { name, email, phone, favorite } = req.body;
 
-  const contacts = await exports.contactList();
-  const newContact = { id: uuidv4(), name, email, phone };
-  const newArray = [...contacts, newContact];
-
-  await fs.writeFile(contactsPath, JSON.stringify(newArray));
+  const newContact = await Contact.create({ name, email, phone, favorite });
 
   res.status(201).json({
     newContact,
   });
 });
 
-exports.updateContact = catchAsync(async (req, res) => {
-  const { name, email, phone } = req.body;
-  const { contactId } = req.params.toString();
+exports.removeContact = catchAsync(async (req, res) => {
+  const { contactId } = req.params;
 
-  const updatedContact = {
+  await Contact.findByIdAndDelete({ _id: contactId });
+
+  res.sendStatus(204);
+});
+
+exports.updateStatusContact = catchAsync(async (req, res) => {
+  const { contactId } = req.params;
+  const { favorite } = req.body;
+
+  const updatedStatus = await Contact.findByIdAndUpdate(
     contactId,
-    name,
-    email,
-    phone,
-  };
+    { favorite },
+    { new: true }
+  ).select("-__v");
 
-  const contacts = await exports.contactList();
-  const filteredArray = contacts.filter((contact) => contact.id !== contactId);
+  res.status(200).json({
+    updatedStatus,
+  });
+});
 
-  const newArray = [...filteredArray, updatedContact];
+exports.updateContact = catchAsync(async (req, res) => {
+  const { contactId } = req.params;
+  const { name, email, phone } = req.body;
 
-  await fs.writeFile(contactsPath, JSON.stringify(newArray));
+  const updatedContact = await Contact.findByIdAndUpdate(
+    contactId,
+    { name, email, phone },
+    { new: true }
+  ).select("-__v");
 
   res.status(200).json({
     updatedContact,

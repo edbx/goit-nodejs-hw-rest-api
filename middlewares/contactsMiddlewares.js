@@ -1,8 +1,12 @@
-const { contactList } = require("../controllers");
+const {
+  Types: { ObjectId },
+} = require("mongoose");
 const AppError = require("../utils/appError");
-const { contactValidator, sameContact, catchAsync } = require("../utils");
+const { catchAsync, contactValidator } = require("../utils");
+const Contact = require("../models/contactsModel");
 
-const checkCreateContactData = catchAsync((req, res, next) => {
+// todo check the function, causes an error
+exports.checkCreateContactData = catchAsync(async (req, res, next) => {
   const { error, value } = contactValidator(req.body);
 
   if (error) return next(new AppError(400, error.details[0].message));
@@ -12,32 +16,42 @@ const checkCreateContactData = catchAsync((req, res, next) => {
   next();
 });
 
-const checkSameContact = catchAsync(async (req, res, next) => {
-  const contacts = await contactList();
-  const contact = req.body;
+exports.checkSameContact = catchAsync(async (req, res, next) => {
+  const { name, email, phone } = req.body;
 
-  if (sameContact(contacts, contact)) {
-    next(new AppError(400, "contact already exist"));
-    return;
+  if (
+    (await Contact.exists({ name: name })) ||
+    (await Contact.exists({ email: email })) ||
+    (await Contact.exists({ phone: phone }))
+  ) {
+    return next(new AppError(400, "contact already exists"));
   }
 
   next();
 });
 
-const checkContactId = catchAsync(async (req, res, next) => {
+exports.checkContactId = catchAsync(async (req, res, next) => {
   const id = req.params.contactId.toString();
-  const contacts = await contactList();
 
-  if (contacts.find((contact) => contact.id === id)) {
-    next();
-    return;
+  if (!ObjectId.isValid(id)) {
+    return next(new AppError(400, "Invalid contact id.."));
   }
 
-  next(new AppError(404, "User with this id does not exist.."));
+  const contactExists = await Contact.exists({ _id: id });
+
+  if (!contactExists) return next(new AppError(404, "Contact not found.."));
+
+  next();
 });
 
-module.exports = {
-  checkSameContact,
-  checkContactId,
-  checkCreateContactData,
-};
+exports.checkStatusContactBody = catchAsync(async (req, res, next) => {
+  const { favorite } = req.body;
+
+  console.log("==========CHECK=STAUS===========");
+  console.log(typeof favorite);
+
+  if (favorite === undefined)
+    return next(new AppError(400, "missing body field favorite "));
+
+  next();
+});

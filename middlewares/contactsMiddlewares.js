@@ -3,7 +3,7 @@ const {
 } = require("mongoose");
 const AppError = require("../utils/appError");
 const { catchAsync, contactValidator } = require("../utils");
-const Contact = require("../models/contactsModel");
+const Contact = require("../models/contactModel");
 
 // todo check the function, causes an error
 exports.checkCreateContactData = catchAsync(async (req, res, next) => {

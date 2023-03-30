@@ -1,5 +1,5 @@
 const { catchAsync } = require("../utils");
-const Contact = require("../models/contactsModel.js");
+const Contact = require("../models/contactModel.js");
 
 exports.listContacts = catchAsync(async (req, res) => {
   const contacts = await Contact.find().select("-__v").sort({ name: 1 });

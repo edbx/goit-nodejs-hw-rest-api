@@ -1,9 +1,9 @@
 const {
   Types: { ObjectId },
 } = require("mongoose");
-const AppError = require("../utils/appError");
-const { catchAsync, contactValidator } = require("../utils");
-const Contact = require("../models/contactModel");
+const { Contact } = require("../../models");
+const AppError = require("../../utils");
+const { catchAsync, contactValidator } = require("../../utils");
 
 // todo check the function, causes an error
 exports.checkCreateContactData = catchAsync(async (req, res, next) => {

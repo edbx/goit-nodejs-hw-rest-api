@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { Schema } = require("mongoose");
 
 const contactSchema = new mongoose.Schema({
   name: {
@@ -17,8 +16,9 @@ const contactSchema = new mongoose.Schema({
     default: false,
   },
   owner: {
-    type: Schema.Types.ObjectId,
-    ref: "user",
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: [true, "Todo must have an owner.."],
   },
 });
 

@@ -1,7 +1,9 @@
-const { checkRegisterUserData } = require("./checkCreateUserData");
+const { checkUserData } = require("./checkUserData");
 const { checkIfUserExist } = require("./checkIfUserExist");
+const { hashPassword } = require("./hashPassword");
 
 module.exports = {
-  checkRegisterUserData,
+  checkUserData,
   checkIfUserExist,
+  hashPassword,
 };

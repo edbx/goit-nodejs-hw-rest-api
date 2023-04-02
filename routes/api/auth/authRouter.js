@@ -1,19 +1,21 @@
 const { Router } = require("express");
-const { registerUser } = require("../../../controllers/auth");
+const { registerUser, loginUser } = require("../../../controllers/auth");
 const {
-  checkRegisterUserData,
+  checkUserData,
   checkIfUserExist,
+  hashPassword,
 } = require("../../../middlewares/auth");
-const { hashPassword } = require("../../../middlewares/auth/hashPassword");
 
 const router = Router();
 
 router.post(
   "/register",
-  checkRegisterUserData,
+  checkUserData,
   checkIfUserExist,
   hashPassword,
   registerUser
 );
+
+router.post("/login", checkUserData, loginUser);
 
 module.exports = router;

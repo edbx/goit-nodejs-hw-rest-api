@@ -1,4 +1,3 @@
-// const { catchAsync } = require("../utils");
 const User = require("../../models/userModel");
 const { loginToken, AppError } = require("../../utils");
 const { catchAsync } = require("../../utils");

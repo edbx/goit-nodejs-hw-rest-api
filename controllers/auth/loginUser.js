@@ -16,6 +16,8 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 
   const token = loginToken(user.id);
 
+  await User.findByIdAndUpdate(user.id, { token: token });
+
   res.status(200).json({
     user: {
       token,

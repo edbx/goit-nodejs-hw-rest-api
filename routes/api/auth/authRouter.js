@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   logoutUser,
+  getCurrentUser,
 } = require("../../../controllers/auth");
 const {
   checkUserData,
@@ -20,9 +21,10 @@ router.post(
   hashPassword,
   registerUser
 );
-
 router.post("/login", checkUserData, loginUser);
 
-router.post("/logout", protect, logoutUser);
+router.use("/", protect);
+router.post("/current", getCurrentUser);
+router.post("/logout", logoutUser);
 
 module.exports = router;

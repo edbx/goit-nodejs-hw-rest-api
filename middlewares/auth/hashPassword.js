@@ -7,12 +7,7 @@ exports.hashPassword = catchAsync(async (req, res, next) => {
 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  console.log("=========HASHED=PSW===========");
-  console.log(hashedPassword);
-
-  console.log("========req.body==========");
   req.body.password = hashedPassword;
-  console.log(req.body);
 
   next();
 });

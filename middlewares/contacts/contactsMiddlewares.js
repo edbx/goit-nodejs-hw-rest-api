@@ -47,9 +47,6 @@ exports.checkContactId = catchAsync(async (req, res, next) => {
 exports.checkStatusContactBody = catchAsync(async (req, res, next) => {
   const { favorite } = req.body;
 
-  console.log("==========CHECK=STAUS===========");
-  console.log(typeof favorite);
-
   if (favorite === undefined)
     return next(new AppError(400, "missing body field favorite "));
 

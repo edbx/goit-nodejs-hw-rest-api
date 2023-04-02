@@ -6,8 +6,6 @@ const bcrypt = require("bcrypt");
 exports.loginUser = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log("===========loginUser========");
-
   const user = await User.findOne({ email });
   if (!user) return next(new AppError(401, "Email or password is wrong"));
 

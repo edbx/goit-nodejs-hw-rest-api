@@ -2,17 +2,21 @@ require("dotenv").config();
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
-const contactsRouter = require("./routes/api/contactsRoutes");
+
+const contactsRouter = require("./routes/api/contacts/contactsRouter");
+const authRouter = require("./routes/api/auth/authRouter");
+
 const mongoose = require("mongoose");
+const { protect } = require("./middlewares/auth/protect");
 
 const app = express();
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect(process.env.MONGO_CONTACTS_URL)
   .then(() => {
-    console.log("Mongo DB is successfully connected");
+    console.log("Mongo Contacts DB is successfully connected");
   })
   .catch((err) => {
     console.log(err);
@@ -22,6 +26,10 @@ mongoose
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+
+app.use("/api/users", authRouter);
+
+app.use("/", protect);
 
 app.use("/api/contacts", contactsRouter);
 

@@ -6,14 +6,14 @@ const {
   addContact,
   updateContact,
   updateStatusContact,
-} = require("../../controllers");
+} = require("../../../controllers/contacts");
 
 const {
   checkContactId,
   checkCreateContactData,
   checkSameContact,
   checkStatusContactBody,
-} = require("../../middlewares");
+} = require("../../../middlewares/contacts");
 
 const router = express.Router();
 

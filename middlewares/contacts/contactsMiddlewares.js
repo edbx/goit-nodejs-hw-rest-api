@@ -1,9 +1,9 @@
 const {
   Types: { ObjectId },
 } = require("mongoose");
-const AppError = require("../utils/appError");
-const { catchAsync, contactValidator } = require("../utils");
-const Contact = require("../models/contactsModel");
+const { Contact } = require("../../models");
+const AppError = require("../../utils");
+const { catchAsync, contactValidator } = require("../../utils");
 
 // todo check the function, causes an error
 exports.checkCreateContactData = catchAsync(async (req, res, next) => {
@@ -46,9 +46,6 @@ exports.checkContactId = catchAsync(async (req, res, next) => {
 
 exports.checkStatusContactBody = catchAsync(async (req, res, next) => {
   const { favorite } = req.body;
-
-  console.log("==========CHECK=STAUS===========");
-  console.log(typeof favorite);
 
   if (favorite === undefined)
     return next(new AppError(400, "missing body field favorite "));

@@ -23,6 +23,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
     user: {
       token,
       email: user.email,
+      avatarURL: user.avatarURL,
       subscription: user.subscription,
     },
   });

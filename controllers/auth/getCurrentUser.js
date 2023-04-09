@@ -12,6 +12,7 @@ exports.getCurrentUser = catchAsync(async (req, res, next) => {
     user: {
       email: user.email,
       subscription: user.subscription,
+      avatar: user.avatarURL,
     },
   });
 });

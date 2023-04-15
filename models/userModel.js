@@ -19,6 +19,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "../public/avatars/default_avatar.png",
   },
+  verificationToken: {
+    type: String,
+    required: [true, "Verify token is required"],
+  },
+  varified: {
+    type: Boolean,
+    default: false,
+  },
+
   token: String,
 });
 

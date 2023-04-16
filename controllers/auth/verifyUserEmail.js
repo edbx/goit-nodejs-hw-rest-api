@@ -6,8 +6,10 @@ exports.verifyUserEmail = catchAsync(async (req, res) => {
 
   if (user.verificationToken === token) {
     user.verified = true;
-    // user.verificationToken = null;
+    user.verificationToken = "1";
   }
+
+  await user.save();
 
   res.status(200).json({
     message: "Verification successful",

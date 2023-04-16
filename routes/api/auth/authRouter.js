@@ -6,6 +6,7 @@ const {
   getCurrentUser,
   updateUserAvatar,
   verifyUserEmail,
+  verifyUser,
 } = require("../../../controllers/auth");
 const {
   checkUserData,
@@ -13,6 +14,8 @@ const {
   hashPassword,
   protect,
   uploadUserPhoto,
+  createVerificationToken,
+  checkIfUserVerified,
 } = require("../../../middlewares/auth");
 
 const {
@@ -33,8 +36,16 @@ router.post(
   checkIfUserExist,
   hashPassword,
   createUserAvatar,
+  createVerificationToken,
   sendVerificationEmail,
   registerUser
+);
+router.post(
+  "/verify",
+  checkIfUserVerified,
+  createVerificationToken,
+  sendVerificationEmail,
+  verifyUser
 );
 router.post("/login", checkUserData, loginUser);
 router.get(

@@ -5,6 +5,8 @@ const {
   logoutUser,
   getCurrentUser,
   updateUserAvatar,
+  verifyUserEmail,
+  verifyUser,
 } = require("../../../controllers/auth");
 const {
   checkUserData,
@@ -12,11 +14,19 @@ const {
   hashPassword,
   protect,
   uploadUserPhoto,
+  createVerificationToken,
+  checkIfUserVerified,
 } = require("../../../middlewares/auth");
 
 const {
   createUserAvatar,
 } = require("../../../middlewares/auth/createUserAvatar");
+const {
+  checkUserForVerification,
+} = require("../../../middlewares/auth/checkUserForVerification");
+const {
+  sendVerificationEmail,
+} = require("../../../middlewares/auth/sendVerificationEmail");
 
 const router = Router();
 
@@ -26,9 +36,23 @@ router.post(
   checkIfUserExist,
   hashPassword,
   createUserAvatar,
+  createVerificationToken,
+  sendVerificationEmail,
   registerUser
 );
+router.post(
+  "/verify",
+  checkIfUserVerified,
+  createVerificationToken,
+  sendVerificationEmail,
+  verifyUser
+);
 router.post("/login", checkUserData, loginUser);
+router.get(
+  "/verify/:verificationToken",
+  checkUserForVerification,
+  verifyUserEmail
+);
 
 router.use("/", protect);
 router.get("/current", getCurrentUser);
